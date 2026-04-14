@@ -13,3 +13,4 @@ data/contacts/contacts.csv
 *.db
 *.sqlite3
 .claude
+.mp3

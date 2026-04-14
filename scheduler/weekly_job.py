@@ -1,7 +1,9 @@
+import asyncio
 import json
 import logging
 from pathlib import Path
 from scheduler.csv_reader import read_contacts
+from scheduler.recording_poller import poll_and_download
 from retell.batch_caller import create_batch_call
 from retell.models import BatchCallTask
 from config.settings import settings
@@ -33,7 +35,14 @@ async def run_weekly_survey() -> None:
                     "question_category", "Data Center Design & Operations"
                 ),
             },
-            metadata={"contact_name": c["name"]},
+            metadata={
+                "contact_name":      c["name"],
+                "job_title":         c["metadata"].get("job_title", "digital infrastructure expert"),
+                "specialisation":    c["metadata"].get("specialisation", "data center operations"),
+                "question_category": c["metadata"].get(
+                    "question_category", "Data Center Design & Operations"
+                ),
+            },
         )
         for c in contacts
     ]
@@ -45,10 +54,15 @@ async def run_weekly_survey() -> None:
             result.batch_call_id,
             len(tasks),
         )
-        # Save batch_call_id so download_recordings.py can find the calls
+        # Save batch_call_id so download_recordings.py can also find the calls
         STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
         STATE_FILE.write_text(
             json.dumps({"batch_call_id": result.batch_call_id, "tasks": len(tasks)})
         )
+
+        # Launch background poller — downloads recordings automatically as calls finish
+        asyncio.create_task(poll_and_download(result.batch_call_id))
+        logger.info("Recording poller launched in background.")
+
     except Exception as exc:
         logger.error("Batch call failed: %s", exc)

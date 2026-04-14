@@ -9,14 +9,18 @@ class Settings(BaseSettings):
     retell_agent_id: str
     retell_from_number: str
 
+    # AssemblyAI
+    assemblyai_api_key: str
+
     # Scheduler
     scheduler_cron: str = "0 9 * * 1"  # Every Monday at 09:00
 
     # Contacts
     contacts_csv_path: str = "data/contacts/contacts.csv"
 
-    # Recordings output directory
+    # File paths
     recordings_dir: str = "data/recordings"
+    transcripts_dir: str = "data/transcripts"
 
 
 settings = Settings()
