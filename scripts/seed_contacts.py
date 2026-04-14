@@ -1,4 +1,4 @@
-"""Generate a sample contacts CSV for local development."""
+"""Generate a sample contacts CSV for local development/testing."""
 import csv
 import sys
 from pathlib import Path
@@ -6,12 +6,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 OUTPUT = Path("data/contacts/contacts.csv")
+
+# question_category must match one of the five categories in agent/system_prompt.py:
+#   Data Center Design & Operations
+#   Sustainability & Environmental Impact
+#   Digital Infrastructure & Networking
+#   Industry Trends & Future Outlook
+#   Leadership, Strategy & Decision-Making
 SAMPLE_DATA = [
-    {"name": "Alice Johnson", "phone": "+12025550101", "survey_topic": "your onboarding experience", "week_label": "this week"},
-    {"name": "Bob Smith",     "phone": "+12025550102", "survey_topic": "your recent support ticket",  "week_label": "this week"},
-    {"name": "Carol White",   "phone": "+12025550103", "survey_topic": "your mobile app experience",  "week_label": "this week"},
-    {"name": "David Lee",     "phone": "+12025550104", "survey_topic": "your billing experience",     "week_label": "this week"},
-    {"name": "Eva Martinez",  "phone": "+12025550105", "survey_topic": "your overall satisfaction",   "week_label": "this week"},
+    {"name": "Alice Johnson", "phone": "+12025550101", "question_category": "Data Center Design & Operations"},
+    {"name": "Bob Smith",     "phone": "+12025550102", "question_category": "Sustainability & Environmental Impact"},
+    {"name": "Carol White",   "phone": "+12025550103", "question_category": "Digital Infrastructure & Networking"},
+    {"name": "David Lee",     "phone": "+12025550104", "question_category": "Industry Trends & Future Outlook"},
+    {"name": "Eva Martinez",  "phone": "+12025550105", "question_category": "Leadership, Strategy & Decision-Making"},
 ]
 
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)

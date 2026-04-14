@@ -12,3 +12,4 @@ data/exports/*.jsonl
 data/contacts/contacts.csv
 *.db
 *.sqlite3
+.claude

@@ -1,10 +1,19 @@
+"""
+AI Caller — iMasonsGPT knowledge extraction scheduler.
+
+Run with:
+    python main.py
+
+The scheduler fires weekly (SCHEDULER_CRON in .env) and dispatches
+batch calls to all contacts in the CSV via Retell AI.
+
+After calls complete, run:
+    python scripts/download_recordings.py
+"""
+import asyncio
 import logging
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from retell.client import close_retell_client
 from scheduler.cron_runner import start_scheduler, stop_scheduler
-from store.database import create_all_tables
-from webhook.router import router as webhook_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,21 +22,19 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await create_all_tables()
+async def main() -> None:
     start_scheduler()
-    logger.info("AI Caller app started.")
-    yield
-    stop_scheduler()
-    await close_retell_client()
-    logger.info("AI Caller app shut down.")
+    logger.info("AI Caller started. Press Ctrl+C to stop.")
+    try:
+        while True:
+            await asyncio.sleep(3600)
+    except (KeyboardInterrupt, SystemExit):
+        pass
+    finally:
+        stop_scheduler()
+        await close_retell_client()
+        logger.info("AI Caller stopped.")
 
 
-app = FastAPI(title="AI Caller", version="1.0.0", lifespan=lifespan)
-app.include_router(webhook_router)
-
-
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+if __name__ == "__main__":
+    asyncio.run(main())

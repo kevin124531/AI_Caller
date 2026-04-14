@@ -1,47 +1,38 @@
-# AI Caller — Automated Survey Calling System
+# AI Caller — iMasonsGPT Knowledge Extraction System
 
-A fully automated weekly survey calling system that uses **Retell AI** voice agents to call contacts, conduct adaptive surveys, store transcripts, and export fine-tuning data for **Qwen / LLaMA** models.
+A weekly automated calling system that uses **Retell AI** voice agents to conduct expert interviews with digital infrastructure professionals. Recordings are saved as MP3s for downstream transcription and fine-tuning of iMasonsGPT.
 
 ---
 
-## Architecture Overview
+## Architecture
 
 ```
 Weekly Scheduler (APScheduler cron)
         ↓
-Contact CSV  →  Retell AI Batch Call  →  Voice Agent (LLM-powered)
+contacts.csv  →  Retell AI Batch Call  →  Voice Agent (LLM-powered interview)
                                                   ↓
-                                         Webhook Receiver  →  PostgreSQL + S3
+                                    scripts/download_recordings.py
                                                   ↓
-                                    Transcript Processor + Auto-Scorer
+                                    data/recordings/<call_id>.mp3
                                                   ↓
-                                    JSONL Export  →  Fine-tuning Pipeline
+                                    Your transcription pipeline
 ```
-
-**Flow:**
-1. Cron fires on a schedule (default: Monday 9 AM)
-2. Contacts loaded from CSV → batch call dispatched to Retell AI
-3. Retell voice agent runs adaptive survey with each contact
-4. `call_ended` webhook POSTs transcript + metadata to this server
-5. Transcript parsed, scored, and saved to PostgreSQL (raw JSON to S3)
-6. Export script converts transcripts to ShareGPT JSONL for fine-tuning
 
 ---
 
-## Tech Stack
+## Question Categories
 
-| Layer | Technology |
-|---|---|
-| Web framework | FastAPI + Uvicorn |
-| Scheduling | APScheduler (async cron) |
-| Database | PostgreSQL + SQLAlchemy async (asyncpg) |
-| HTTP client | httpx (async) |
-| Voice AI | Retell AI (batch calls + webhook) |
-| Cloud storage | AWS S3 (optional backup) |
-| Sentiment scoring | VADER (vaderSentiment) |
-| Config | Pydantic Settings |
-| Training format | ShareGPT JSONL |
-| Testing | pytest + pytest-asyncio + moto |
+Each contact in the CSV is assigned a `question_category`. The agent picks 3–4 questions from that category and adapts based on the responses.
+
+| Category |
+|---|
+| Data Center Design & Operations |
+| Sustainability & Environmental Impact |
+| Digital Infrastructure & Networking |
+| Industry Trends & Future Outlook |
+| Leadership, Strategy & Decision-Making |
+
+All calls also begin with a personal check-in (how was your week, what are you working on, etc.) before moving to expert questions.
 
 ---
 
@@ -49,67 +40,36 @@ Contact CSV  →  Retell AI Batch Call  →  Voice Agent (LLM-powered)
 
 ```
 AI_Caller/
-├── main.py                    # FastAPI app entry point
+├── main.py                        # Scheduler entry point (python main.py)
 ├── requirements.txt
-├── .env                       # Your secrets (never commit)
-├── .env.example               # Template
+├── .env                           # Your secrets (never commit)
+├── .env.example                   # Template
 │
 ├── agent/
-│   └── system_prompt.py       # Survey agent prompt template
+│   └── system_prompt.py           # Interview prompt with all question categories
 │
 ├── config/
-│   └── settings.py            # Pydantic settings (loads .env)
+│   └── settings.py                # Pydantic settings (loads .env)
 │
 ├── scheduler/
-│   ├── cron_runner.py         # APScheduler setup
-│   ├── weekly_job.py          # Reads CSV → dispatches batch calls
-│   └── csv_reader.py          # Contact CSV parser
+│   ├── cron_runner.py             # APScheduler setup
+│   ├── weekly_job.py              # Reads CSV → dispatches batch calls → saves state
+│   └── csv_reader.py              # Contact CSV parser
 │
 ├── retell/
-│   ├── client.py              # Retell AI HTTP client
-│   ├── batch_caller.py        # POST /v2/batch-call
-│   └── models.py              # Request/response models
-│
-├── webhook/
-│   ├── router.py              # POST /webhook/retell endpoint
-│   ├── event_handler.py       # Event dispatcher
-│   └── models.py              # Retell webhook payload models
-│
-├── processor/
-│   ├── pipeline.py            # Orchestrates full call processing
-│   ├── transcript_parser.py   # Parses utterances + timing
-│   └── scorer.py              # VADER sentiment + heuristic scoring
-│
-├── store/
-│   ├── database.py            # Async SQLAlchemy engine
-│   ├── models.py              # ORM: Call, Transcript, Segment, Score
-│   ├── repository.py          # DB query/mutation helpers
-│   └── s3_uploader.py         # Upload raw JSON to S3
-│
-├── formatter/
-│   ├── qwen_formatter.py      # Transcript → ShareGPT format
-│   ├── export_job.py          # Batch JSONL export logic
-│   └── schemas.py             # ShareGPT / Alpaca data models
+│   ├── client.py                  # Retell AI HTTP client
+│   ├── batch_caller.py            # POST /v2/batch-call
+│   └── models.py                  # Request/response models
 │
 ├── scripts/
-│   ├── create_tables.py       # One-time DB table creation
-│   ├── seed_contacts.py       # Generate sample contacts CSV
-│   └── run_export.py          # Manual training data export
+│   ├── download_recordings.py     # Poll Retell API → download MP3s
+│   └── seed_contacts.py           # Generate sample contacts CSV
 │
 └── data/
-    ├── contacts/              # contacts.csv goes here
-    └── exports/               # training_YYYYMMDD.jsonl output
+    ├── contacts/                  # contacts.csv goes here
+    ├── recordings/                # Downloaded MP3s saved here
+    └── state/                     # last_batch.json (auto-created by scheduler)
 ```
-
----
-
-## Prerequisites
-
-- Python 3.10+
-- PostgreSQL running locally or remotely
-- Retell AI account with a provisioned phone number and agent
-- ngrok (for local webhook testing)
-- AWS account + S3 bucket (optional — for raw transcript backup)
 
 ---
 
@@ -128,45 +88,26 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit `.env` with your values:
+Edit `.env`:
 
 ```env
-# Retell AI
 RETELL_API_KEY=your_retell_api_key
 RETELL_AGENT_ID=ag_xxxxxxxxxxxxxxxx
 RETELL_FROM_NUMBER=+12025550100
-RETELL_WEBHOOK_SECRET=your_webhook_secret
 
-# PostgreSQL
-DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/ai_caller
-
-# AWS S3 (optional — leave blank to skip)
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=us-east-1
-S3_BUCKET=
-
-# Scheduler
-SCHEDULER_CRON=0 9 * * 1   # Every Monday at 9 AM
-
-# Contacts
+SCHEDULER_CRON=0 9 * * 1        # Every Monday at 9 AM
 CONTACTS_CSV_PATH=data/contacts/contacts.csv
+RECORDINGS_DIR=data/recordings
 ```
 
-### 3. Set up the database
+### 3. Add contacts
 
-```powershell
-python scripts/create_tables.py
-```
-
-### 4. Add contacts
-
-Either create `data/contacts/contacts.csv` manually:
+Create `data/contacts/contacts.csv`:
 
 ```csv
-name,phone,survey_topic,week_label
-John Smith,+12025550101,Product Feedback,Week 1
-Jane Doe,+12025550102,Product Feedback,Week 1
+name,phone,question_category
+John Smith,+12025550101,Data Center Design & Operations
+Jane Doe,+12025550102,Sustainability & Environmental Impact
 ```
 
 Or generate sample contacts for testing:
@@ -177,123 +118,71 @@ python scripts/seed_contacts.py
 
 ---
 
-## Running the App
-
-### Start the server
-
-```powershell
-uvicorn main:app --reload
-```
-
-The app starts on `http://localhost:8000`. The scheduler starts automatically.
-
-### Expose webhook for local testing (ngrok)
-
-In a second terminal:
-
-```powershell
-ngrok http 8000
-```
-
-Copy the `https://xxxx.ngrok.io` URL and set your webhook in the Retell dashboard to:
-
-```
-https://xxxx.ngrok.io/webhook/retell
-```
-
-### Health check
-
-```
-GET http://localhost:8000/health
-```
-
----
-
 ## Retell AI Agent Setup
 
 1. Go to [app.retellai.com](https://app.retellai.com) → **Create Agent** → **Single Prompt Agent**
-2. Paste the contents of `agent/system_prompt.py` into the prompt box
-3. Set **Welcome Message** to **Agent speaks first**
-4. Under **Webhook Settings**, set the webhook URL to `https://your-domain/webhook/retell`
-5. Under **Phone Numbers**, attach your provisioned number
-6. Copy the **Agent ID** from the top of the page into `.env` as `RETELL_AGENT_ID`
-7. Hit **Publish**
+2. Paste the contents of `agent/system_prompt.py` (the `SYSTEM_PROMPT_TEMPLATE` string) into the prompt box
+3. Set **Welcome Message** → **Agent speaks first**
+4. Attach your provisioned phone number to the agent
+5. Copy the **Agent ID** from the top of the page into `.env` as `RETELL_AGENT_ID`
+6. Hit **Publish**
 
-### Dynamic variables injected per call
+### Dynamic variables used
 
-| Variable | Source |
-|---|---|
-| `{{contact_name}}` | CSV `name` column |
-| `{{survey_topic}}` | CSV `survey_topic` column |
-| `{{week_label}}` | CSV `week_label` column |
+| Variable | Source | Example |
+|---|---|---|
+| `{{contact_name}}` | CSV `name` column | `"John Smith"` |
+| `{{question_category}}` | CSV `question_category` column | `"Data Center Design & Operations"` |
 
 ---
 
-## Exporting Training Data
+## Running
 
-After calls have been processed, export transcripts as ShareGPT JSONL:
+### Start the scheduler
 
 ```powershell
-python scripts/run_export.py
+python main.py
 ```
 
-Output: `data/exports/training_YYYYMMDD_HHMMSS.jsonl`
+The scheduler runs in the background and fires on `SCHEDULER_CRON`. It dispatches the batch call and saves the `batch_call_id` to `data/state/last_batch.json`.
 
-Each line is a ShareGPT-format record:
+To trigger a call immediately without waiting for the cron, you can run the job directly:
 
-```json
-{
-  "conversations": [
-    {"from": "system", "value": "You are a survey interviewer..."},
-    {"from": "human", "value": "Hello?"},
-    {"from": "gpt", "value": "Hi, is this John? ..."},
-    ...
-  ],
-  "call_id": "call_abc123"
-}
+```powershell
+python -c "import asyncio; from scheduler.weekly_job import run_weekly_survey; asyncio.run(run_weekly_survey())"
 ```
 
-Use this file directly with **LLaMA-Factory** or **ms-swift** for fine-tuning Qwen.
+### Download recordings
+
+After calls have completed (usually within an hour), run:
+
+```powershell
+# Uses the last batch automatically
+python scripts/download_recordings.py
+
+# Or specify a batch explicitly
+python scripts/download_recordings.py --batch-id batch_abc123
+
+# Or download a single call
+python scripts/download_recordings.py --call-id call_xyz456
+```
+
+MP3s are saved to `data/recordings/<call_id>.mp3`.
 
 ---
 
-## Database Schema
+## CSV Format
 
-| Table | Description |
-|---|---|
-| `calls` | Call metadata (IDs, numbers, status, timestamps, duration) |
-| `transcripts` | One per call — S3 key, export flag |
-| `transcript_segments` | Per-utterance rows (role, content, start_ms, end_ms) |
-| `scores` | Auto-scoring dimensions per call (sentiment, completion rate, etc.) |
-
----
-
-## Auto-Scoring Dimensions
-
-The scorer (`processor/scorer.py`) assigns a `[0.0, 1.0]` float per dimension:
-
-| Dimension | Method |
-|---|---|
-| `sentiment` | VADER compound score normalised to [0, 1] |
-| `completion_rate` | Ratio of expected survey questions detected by regex |
-| `avg_response_length` | Average user words per turn (normalised to 50-word target) |
-| `user_turn_count` | Raw count of user utterances |
-
----
-
-## Scripts Reference
-
-| Script | Purpose |
-|---|---|
-| `scripts/create_tables.py` | Create all DB tables (run once) |
-| `scripts/seed_contacts.py` | Generate sample `contacts.csv` for testing |
-| `scripts/run_export.py` | Manually trigger JSONL training data export |
+| Column | Required | Description |
+|---|---|---|
+| `name` | Yes | Contact's first name (used in greeting) |
+| `phone` | Yes | E.164 format, e.g. `+12025550101` |
+| `question_category` | No | One of the 5 categories (defaults to Data Center Design & Operations) |
 
 ---
 
 ## Notes
 
-- **S3 is optional.** If AWS credentials are blank, S3 upload fails silently and `s3_key` is `NULL` in the DB. All transcript data is still saved to PostgreSQL.
-- **The scheduler fires automatically** when the app starts, based on `SCHEDULER_CRON`. You can also trigger a batch call manually via `scheduler/weekly_job.py`.
-- **Webhook signature verification** uses HMAC-SHA256 with `RETELL_WEBHOOK_SECRET`. Set this in both your `.env` and the Retell dashboard.
-- For production, replace ngrok with a deployed server (Railway, Render, VPS) and update the webhook URL in the Retell dashboard.
+- **No server or ngrok needed.** The system is fully outbound — it dispatches calls and polls for results. No webhook or public URL required.
+- **Recording must be enabled** in your Retell agent settings for `recording_url` to be populated on completed calls.
+- If `download_recordings.py` shows "No recording URL" for a call, check that recording is turned on in the Retell dashboard under the agent's **Call Settings**.
