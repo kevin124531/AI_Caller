@@ -14,7 +14,7 @@ async def create_batch_call(tasks: list[BatchCallTask]) -> BatchCallResponse:
     )
     client = get_retell_client()
     response = await client.post(
-        "/v2/batch-call",
+        "/create-batch-call",
         json=payload.model_dump(exclude_none=True),
     )
     response.raise_for_status()
