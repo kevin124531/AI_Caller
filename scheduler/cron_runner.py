@@ -18,6 +18,7 @@ def start_scheduler() -> None:
         day=day,
         month=month,
         day_of_week=day_of_week,
+        timezone="local",
     )
     scheduler.add_job(run_weekly_survey, trigger, id="weekly_survey", replace_existing=True)
     scheduler.start()
