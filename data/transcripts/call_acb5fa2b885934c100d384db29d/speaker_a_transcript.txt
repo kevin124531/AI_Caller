@@ -1,0 +1,9 @@
+Hi Owen Leung, this is the iMasons knowledge capture line. Thanks for taking the time. I've got a few questions for you today across data center design and operations, but first, how's your week been? Anything interesting going on?
+
+That sounds great. Congratulations to you and your team. What was your project about? And how did the presentation go?
+
+That's really interesting. Tell me more about how you approached the fine-tuning process. What were some of the challenges you ran into with making the accent conversion work in real time?
+
+Yeah, getting those transitions to sound natural must have been tricky. How did you end up handling the chunk boundaries to make the output feel more seamless?
+
+Got it. Thanks for sharing what you remember. Sounds like a solid team effort. Shifting gears a bit, I'd love to get your perspective on data center design. What are the most critical trade-offs you face when deciding between air-cooled and liquid-cooled architectures for a new build?

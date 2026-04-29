@@ -1,0 +1,7 @@
+My week's been good. I just— we just had final presentations for ML and my team did pretty well.
+
+Our project was, we fine-tuned an accent converter, and then we used Shrugging to make it somewhat real-time, and we fine-tuned the Hindi accent to the English accent portion.
+
+Um, so for fine-tuning, we used LoRA, which helps, um, reduce the computation and helps with overfitting. Um, because one of the biggest issues we had was like overfitting the model. Um, and then for making it real-time, um, we had, we had a lot of trouble with chunking. And making the boundaries between the chunks smooth and felt natural.
+
+This wasn't my portion of the project, but from what I remember, Lucen saying something about fading the boundaries into each other or something like that. I'm not entirely sure though.

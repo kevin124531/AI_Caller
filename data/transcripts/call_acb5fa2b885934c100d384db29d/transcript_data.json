@@ -1,0 +1,120 @@
+{
+  "call_id": "call_acb5fa2b885934c100d384db29d",
+  "full_transcript": "Hi Owen Leung, this is the iMasons knowledge capture line. Thanks for taking the time. I've got a few questions for you today across data center design and operations, but first, how's your week been? Anything interesting going on? My week's been good. I just— we just had final presentations for ML and my team did pretty well. That sounds great. Congratulations to you and your team. What was your project about? And how did the presentation go? Our project was, we fine-tuned an accent converter, and then we used Shrugging to make it somewhat real-time, and we fine-tuned the Hindi accent to the English accent portion. That's really interesting. Tell me more about how you approached the fine-tuning process. What were some of the challenges you ran into with making the accent conversion work in real time? Um, so for fine-tuning, we used LoRA, which helps, um, reduce the computation and helps with overfitting. Um, because one of the biggest issues we had was like overfitting the model. Um, and then for making it real-time, um, we had, we had a lot of trouble with chunking. And making the boundaries between the chunks smooth and felt natural. Yeah, getting those transitions to sound natural must have been tricky. How did you end up handling the chunk boundaries to make the output feel more seamless? This wasn't my portion of the project, but from what I remember, Lucen saying something about fading the boundaries into each other or something like that. I'm not entirely sure though. Got it. Thanks for sharing what you remember. Sounds like a solid team effort. Shifting gears a bit, I'd love to get your perspective on data center design. What are the most critical trade-offs you face when deciding between air-cooled and liquid-cooled architectures for a new build?",
+  "speakers": {
+    "Speaker A": [
+      {
+        "text": "Hi Owen Leung, this is the iMasons knowledge capture line. Thanks for taking the time. I've got a few questions for you today across data center design and operations, but first, how's your week been? Anything interesting going on?",
+        "start": 1298,
+        "end": 13385,
+        "confidence": 0.9405857
+      },
+      {
+        "text": "That sounds great. Congratulations to you and your team. What was your project about? And how did the presentation go?",
+        "start": 22394,
+        "end": 28103,
+        "confidence": 0.97284466
+      },
+      {
+        "text": "That's really interesting. Tell me more about how you approached the fine-tuning process. What were some of the challenges you ran into with making the accent conversion work in real time?",
+        "start": 45335,
+        "end": 53461,
+        "confidence": 0.9677403
+      },
+      {
+        "text": "Yeah, getting those transitions to sound natural must have been tricky. How did you end up handling the chunk boundaries to make the output feel more seamless?",
+        "start": 85479,
+        "end": 93173,
+        "confidence": 0.98339015
+      },
+      {
+        "text": "Got it. Thanks for sharing what you remember. Sounds like a solid team effort. Shifting gears a bit, I'd love to get your perspective on data center design. What are the most critical trade-offs you face when deciding between air-cooled and liquid-cooled architectures for a new build?",
+        "start": 109187,
+        "end": 124350,
+        "confidence": 0.9784861
+      }
+    ],
+    "Speaker B": [
+      {
+        "text": "My week's been good. I just— we just had final presentations for ML and my team did pretty well.",
+        "start": 15004,
+        "end": 21336,
+        "confidence": 0.9458437
+      },
+      {
+        "text": "Our project was, we fine-tuned an accent converter, and then we used Shrugging to make it somewhat real-time, and we fine-tuned the Hindi accent to the English accent portion.",
+        "start": 29693,
+        "end": 43151,
+        "confidence": 0.88494134
+      },
+      {
+        "text": "Um, so for fine-tuning, we used LoRA, which helps, um, reduce the computation and helps with overfitting. Um, because one of the biggest issues we had was like overfitting the model. Um, and then for making it real-time, um, we had, we had a lot of trouble with chunking. And making the boundaries between the chunks smooth and felt natural.",
+        "start": 55532,
+        "end": 84275,
+        "confidence": 0.91132504
+      },
+      {
+        "text": "This wasn't my portion of the project, but from what I remember, Lucen saying something about fading the boundaries into each other or something like that. I'm not entirely sure though.",
+        "start": 97782,
+        "end": 107821,
+        "confidence": 0.895607
+      }
+    ]
+  },
+  "utterances": [
+    {
+      "speaker": "Speaker A",
+      "text": "Hi Owen Leung, this is the iMasons knowledge capture line. Thanks for taking the time. I've got a few questions for you today across data center design and operations, but first, how's your week been? Anything interesting going on?",
+      "start": 1298,
+      "end": 13385
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "My week's been good. I just— we just had final presentations for ML and my team did pretty well.",
+      "start": 15004,
+      "end": 21336
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "That sounds great. Congratulations to you and your team. What was your project about? And how did the presentation go?",
+      "start": 22394,
+      "end": 28103
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Our project was, we fine-tuned an accent converter, and then we used Shrugging to make it somewhat real-time, and we fine-tuned the Hindi accent to the English accent portion.",
+      "start": 29693,
+      "end": 43151
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "That's really interesting. Tell me more about how you approached the fine-tuning process. What were some of the challenges you ran into with making the accent conversion work in real time?",
+      "start": 45335,
+      "end": 53461
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Um, so for fine-tuning, we used LoRA, which helps, um, reduce the computation and helps with overfitting. Um, because one of the biggest issues we had was like overfitting the model. Um, and then for making it real-time, um, we had, we had a lot of trouble with chunking. And making the boundaries between the chunks smooth and felt natural.",
+      "start": 55532,
+      "end": 84275
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "Yeah, getting those transitions to sound natural must have been tricky. How did you end up handling the chunk boundaries to make the output feel more seamless?",
+      "start": 85479,
+      "end": 93173
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "This wasn't my portion of the project, but from what I remember, Lucen saying something about fading the boundaries into each other or something like that. I'm not entirely sure though.",
+      "start": 97782,
+      "end": 107821
+    },
+    {
+      "speaker": "Speaker A",
+      "text": "Got it. Thanks for sharing what you remember. Sounds like a solid team effort. Shifting gears a bit, I'd love to get your perspective on data center design. What are the most critical trade-offs you face when deciding between air-cooled and liquid-cooled architectures for a new build?",
+      "start": 109187,
+      "end": 124350
+    }
+  ]
+}

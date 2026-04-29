@@ -1,0 +1,36 @@
+{
+  "call_id": "call_3f547b0014b9279503d8e318c6b",
+  "full_transcript": "Your call has been forwarded to voicemail. The person you're trying to reach is not available. At the tone, please record your message. When you have finished recording, you may hang up. Hi, this is the iMasons knowledge capture line calling for Kevin Kakad. Sorry I missed you today. If you'd like to reschedule or have any questions, please let us know. Thanks and have a great day.",
+  "speakers": {
+    "Speaker A": [
+      {
+        "text": "Your call has been forwarded to voicemail. The person you're trying to reach is not available. At the tone, please record your message. When you have finished recording, you may hang up.",
+        "start": 577,
+        "end": 10819,
+        "confidence": 0.9955266
+      }
+    ],
+    "Speaker B": [
+      {
+        "text": "Hi, this is the iMasons knowledge capture line calling for Kevin Kakad. Sorry I missed you today. If you'd like to reschedule or have any questions, please let us know. Thanks and have a great day.",
+        "start": 12232,
+        "end": 23710,
+        "confidence": 0.9604265
+      }
+    ]
+  },
+  "utterances": [
+    {
+      "speaker": "Speaker A",
+      "text": "Your call has been forwarded to voicemail. The person you're trying to reach is not available. At the tone, please record your message. When you have finished recording, you may hang up.",
+      "start": 577,
+      "end": 10819
+    },
+    {
+      "speaker": "Speaker B",
+      "text": "Hi, this is the iMasons knowledge capture line calling for Kevin Kakad. Sorry I missed you today. If you'd like to reschedule or have any questions, please let us know. Thanks and have a great day.",
+      "start": 12232,
+      "end": 23710
+    }
+  ]
+}

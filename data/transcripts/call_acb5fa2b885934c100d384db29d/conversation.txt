@@ -1,0 +1,17 @@
+[Speaker A]: Hi Owen Leung, this is the iMasons knowledge capture line. Thanks for taking the time. I've got a few questions for you today across data center design and operations, but first, how's your week been? Anything interesting going on?
+
+[Speaker B]: My week's been good. I just— we just had final presentations for ML and my team did pretty well.
+
+[Speaker A]: That sounds great. Congratulations to you and your team. What was your project about? And how did the presentation go?
+
+[Speaker B]: Our project was, we fine-tuned an accent converter, and then we used Shrugging to make it somewhat real-time, and we fine-tuned the Hindi accent to the English accent portion.
+
+[Speaker A]: That's really interesting. Tell me more about how you approached the fine-tuning process. What were some of the challenges you ran into with making the accent conversion work in real time?
+
+[Speaker B]: Um, so for fine-tuning, we used LoRA, which helps, um, reduce the computation and helps with overfitting. Um, because one of the biggest issues we had was like overfitting the model. Um, and then for making it real-time, um, we had, we had a lot of trouble with chunking. And making the boundaries between the chunks smooth and felt natural.
+
+[Speaker A]: Yeah, getting those transitions to sound natural must have been tricky. How did you end up handling the chunk boundaries to make the output feel more seamless?
+
+[Speaker B]: This wasn't my portion of the project, but from what I remember, Lucen saying something about fading the boundaries into each other or something like that. I'm not entirely sure though.
+
+[Speaker A]: Got it. Thanks for sharing what you remember. Sounds like a solid team effort. Shifting gears a bit, I'd love to get your perspective on data center design. What are the most critical trade-offs you face when deciding between air-cooled and liquid-cooled architectures for a new build?
